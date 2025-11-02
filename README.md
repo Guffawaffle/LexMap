@@ -325,6 +325,12 @@ codemap slice [options]
   --radius N                Hop distance (default: 2)
   --lexbrain <url>          LexBrain endpoint
 
+codemap atlas-frame [options]
+  --module-scope <modules>  Comma-separated seed module IDs
+  --fold-radius N           How many hops to expand (default: 1)
+  --policy <path>           Policy JSON file
+  --lexbrain <url>          LexBrain endpoint
+
 codemap query [options]
   --type <type>             callers|callees|module_deps|recent_patterns|violations
   --args <json>             Query-specific arguments

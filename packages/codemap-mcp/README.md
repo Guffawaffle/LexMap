@@ -50,6 +50,37 @@ Fetch last-run metrics.
 - `repo` (optional): Repository name
 - `commit` (optional): Commit hash
 
+### lexmap_get_atlas_frame
+Get structural neighborhood data for modules (Atlas Frame).
+
+**Parameters:**
+- `module_scope` (required): Array of seed module IDs
+- `fold_radius` (optional): How many hops to expand (default: 1)
+
+**Output Format:**
+```json
+{
+  "atlas_timestamp": "2025-11-01T23:17:00Z",
+  "seed_modules": ["ui/user-admin-panel"],
+  "fold_radius": 1,
+  "modules": [
+    {
+      "id": "ui/user-admin-panel",
+      "coords": [0, 2],
+      "allowed_callers": ["services/user-access-api"],
+      "forbidden_callers": ["services/auth-core"],
+      "feature_flags": ["beta_user_admin"],
+      "requires_permissions": ["can_manage_users"],
+      "kill_patterns": ["duplicate_auth_logic"]
+    }
+  ],
+  "critical_rule": "Every module name MUST match the IDs in lexmap.policy.json. No ad hoc naming."
+}
+```
+
+**Use Case:**
+Enables LexBrain to generate visual/structural context cards for architectural navigation. The Atlas Frame provides a structured neighborhood view around specified modules, incorporating policy rules and architectural constraints.
+
 ## Usage
 
 Start the MCP server:
