@@ -5,6 +5,7 @@ import kleur from 'kleur';
 import { indexCommand } from './commands/index.js';
 import { sliceCommand } from './commands/slice.js';
 import { queryCommand } from './commands/query.js';
+import { atlasFrameCommand } from './commands/atlas-frame.js';
 
 const program = new Command();
 
@@ -48,5 +49,16 @@ program
   .option('--mode <mode>', 'Storage mode: local|zk', process.env.LEXBRAIN_MODE || 'local')
   .option('--key-hex <hex>', 'AES key for zk mode', process.env.LEXBRAIN_KEY_HEX)
   .action(queryCommand);
+
+program
+  .command('atlas-frame')
+  .description('Get structural neighborhood data for modules')
+  .requiredOption('--module-scope <modules>', 'Comma-separated seed module IDs')
+  .option('--fold-radius <n>', 'How many hops to expand', '1')
+  .option('--policy <path>', 'Policy JSON file', 'lexmap.policy.json')
+  .option('--lexbrain <url>', 'LexBrain endpoint', process.env.LEXBRAIN_URL || 'http://localhost:8123')
+  .option('--mode <mode>', 'Storage mode: local|zk', process.env.LEXBRAIN_MODE || 'local')
+  .option('--key-hex <hex>', 'AES key for zk mode', process.env.LEXBRAIN_KEY_HEX)
+  .action(atlasFrameCommand);
 
 program.parse();

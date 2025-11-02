@@ -223,6 +223,27 @@ async function handleRequest(request) {
                 },
               },
             },
+            {
+              name: "lexmap_get_atlas_frame",
+              description:
+                "Get structural neighborhood data for modules",
+              inputSchema: {
+                type: "object",
+                required: ["module_scope"],
+                properties: {
+                  module_scope: {
+                    type: "array",
+                    items: { type: "string" },
+                    description: "Seed module IDs",
+                  },
+                  fold_radius: {
+                    type: "number",
+                    default: 1,
+                    description: "How many hops to expand",
+                  },
+                },
+              },
+            },
           ],
         },
       };
@@ -357,6 +378,25 @@ async function handleRequest(request) {
                           .join("\n")
                       : ""
                   }`,
+                },
+              ],
+            };
+            break;
+          }
+
+          case "lexmap_get_atlas_frame": {
+            if (!args.module_scope || !Array.isArray(args.module_scope)) {
+              throw new Error("module_scope parameter must be an array");
+            }
+
+            const moduleScope = args.module_scope.join(",");
+            const foldRadius = args.fold_radius || 1;
+
+            result = {
+              content: [
+                {
+                  type: "text",
+                  text: `LexMap Atlas Frame request:\n  Modules: ${moduleScope}\n  Fold Radius: ${foldRadius}\n\nNote: Atlas Frame generation requires running the codemap-indexer CLI.\nCommand: pnpm --filter @lex/lexmap-indexer dev atlas-frame --module-scope "${moduleScope}" --fold-radius ${foldRadius}`,
                 },
               ],
             };

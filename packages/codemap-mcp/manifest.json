@@ -131,6 +131,28 @@
           }
         }
       }
+    },
+    {
+      "name": "lexmap_get_atlas_frame",
+      "description": "Get structural neighborhood data for modules",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "module_scope": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Seed module IDs"
+          },
+          "fold_radius": {
+            "type": "number",
+            "default": 1,
+            "description": "How many hops to expand"
+          }
+        },
+        "required": ["module_scope"]
+      }
     }
   ],
   "server": {
