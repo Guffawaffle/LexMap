@@ -5,6 +5,9 @@
  * Serves LexMap tools via MCP-over-HTTP endpoints.
  * Similar to LexBrain's HTTP mode but for architectural policy queries.
  *
+ * This server provides MCP tool interfaces that return instructions for running
+ * LexMap CLI commands. The actual indexing/querying happens via the CLI.
+ *
  * Usage:
  *   node mcp-http.mjs
  *
@@ -12,9 +15,6 @@
  *   PORT                 - HTTP port (default: 8124)
  *   LEXMAP_POLICY        - Path to policy JSON (default: ./lexmap.policy.json)
  *   LEXMAP_CONFIG        - Path to config JSON (default: ./lexmap.config.json)
- *   LEXBRAIN_URL         - LexBrain endpoint (default: http://localhost:8123)
- *   LEXBRAIN_MODE        - 'local' or 'zk' (default: local)
- *   LEXBRAIN_KEY_HEX     - 64-char hex key for ZK mode
  */
 
 import { createServer } from "http";
@@ -31,14 +31,10 @@ const config = {
     process.env.LEXMAP_POLICY || resolve(__dirname, "lexmap.policy.json"),
   configPath:
     process.env.LEXMAP_CONFIG || resolve(__dirname, "lexmap.config.json"),
-  lexbrainUrl: process.env.LEXBRAIN_URL || "http://localhost:8123",
-  lexbrainMode: process.env.LEXBRAIN_MODE || "local",
-  lexbrainKeyHex: process.env.LEXBRAIN_KEY_HEX,
 };
 
 console.log(`[LexMap] Starting HTTP MCP server on port ${config.port}`);
 console.log(`[LexMap] Policy: ${config.policyPath}`);
-console.log(`[LexMap] LexBrain: ${config.lexbrainUrl}`);
 
 // Load policy if it exists
 let policy = null;
@@ -234,11 +230,6 @@ async function handleToolCall(name, args) {
         cmdArgs.push("--determinism-target", String(args.determinism_target));
       if (args.heuristics) cmdArgs.push("--heuristics", args.heuristics);
       if (args.policy_path) cmdArgs.push("--policy", args.policy_path);
-
-      cmdArgs.push("--lexbrain", config.lexbrainUrl);
-      cmdArgs.push("--mode", config.lexbrainMode);
-      if (config.lexbrainKeyHex)
-        cmdArgs.push("--key-hex", config.lexbrainKeyHex);
 
       return {
         content: [

@@ -5,6 +5,10 @@
  * A Model Context Protocol (MCP) server for architectural policy enforcement.
  * Speaks MCP over stdio for AI coding agents.
  *
+ * This server provides MCP tool interfaces that return instructions for running
+ * LexMap CLI commands. The actual indexing/querying happens via the CLI, which
+ * can then interact with LexBrain (if running) for fact storage/retrieval.
+ *
  * Usage:
  *   lexmap-mcp
  *   npx -y /srv/lex-mcp/lex-map
@@ -12,9 +16,6 @@
  * Environment variables:
  *   LEXMAP_POLICY        - Path to policy JSON (default: ./lexmap.policy.json)
  *   LEXMAP_CONFIG        - Path to config JSON (default: ./lexmap.config.json)
- *   LEXBRAIN_URL         - LexBrain endpoint (default: http://localhost:8123)
- *   LEXBRAIN_MODE        - 'local' or 'zk' (default: local)
- *   LEXBRAIN_KEY_HEX     - 64-char hex key for ZK mode
  */
 
 import { resolve, dirname } from "path";
@@ -29,14 +30,10 @@ const config = {
     process.env.LEXMAP_POLICY || resolve(__dirname, "lexmap.policy.json"),
   configPath:
     process.env.LEXMAP_CONFIG || resolve(__dirname, "lexmap.config.json"),
-  lexbrainUrl: process.env.LEXBRAIN_URL || "http://localhost:8123",
-  lexbrainMode: process.env.LEXBRAIN_MODE || "local",
-  lexbrainKeyHex: process.env.LEXBRAIN_KEY_HEX,
 };
 
 console.error(`[LexMap] Starting MCP server`);
 console.error(`[LexMap] Policy: ${config.policyPath}`);
-console.error(`[LexMap] LexBrain: ${config.lexbrainUrl}`);
 
 // Load policy if it exists
 let policy = null;
@@ -204,11 +201,6 @@ async function handleRequest(request) {
           cmdArgs.push("--determinism-target", String(args.determinism_target));
         if (args.heuristics) cmdArgs.push("--heuristics", args.heuristics);
         if (args.policy_path) cmdArgs.push("--policy", args.policy_path);
-
-        cmdArgs.push("--lexbrain", config.lexbrainUrl);
-        cmdArgs.push("--mode", config.lexbrainMode);
-        if (config.lexbrainKeyHex)
-          cmdArgs.push("--key-hex", config.lexbrainKeyHex);
 
         // For now, return a placeholder response
         // In production, this would spawn the indexer CLI
