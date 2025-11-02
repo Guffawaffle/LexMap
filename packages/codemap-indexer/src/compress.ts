@@ -1,11 +1,8 @@
-import {
-  decompress as fzstdDecompress,
-} from "fzstd";
 import { stableStringify } from "./hash.js";
 import { gzipSync, gunzipSync } from 'zlib';
 
 export async function initCompress(): Promise<void> {
-  // fzstd doesn't require initialization
+  // No initialization needed for zlib
 }
 
 export async function toB64(obj: any): Promise<string> {

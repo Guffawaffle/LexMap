@@ -77,6 +77,7 @@ export interface Policy {
   modules?: {
     patterns?: Array<{ name: string; match: string }>;
     allowed_deps?: Array<{ from: string; to: string }>;
+    [moduleId: string]: any; // Module-specific policies
   };
   kill_patterns?: Array<{ kind: string; match: string }>;
   heuristics?: {
@@ -90,6 +91,19 @@ export interface Policy {
     confidence?: { hard: number; soft: number };
   };
   determinism_target?: number;
+}
+
+export interface ModulePolicy {
+  description?: string;
+  owns_namespaces?: string[];
+  owns_paths?: string[];
+  exposes?: string[];
+  allowed_callers?: string[];
+  forbidden_callers?: string[];
+  feature_flags?: string[];
+  requires_permissions?: string[];
+  kill_patterns?: string[];
+  notes?: string;
 }
 
 export interface PlanJSON {

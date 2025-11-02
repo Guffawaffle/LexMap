@@ -1,4 +1,4 @@
-import { Policy, Module } from './types.js';
+import { Policy, ModulePolicy, Module } from './types.js';
 
 /**
  * Represents an adjacency graph built from module dependencies
@@ -147,9 +147,10 @@ function getModuleMetadata(
   index: number,
   total: number
 ): ModuleWithMetadata {
-  // Get module-specific policy if it exists
-  const modulePolicies = (policy.modules as any)?.modules || policy.modules || {};
-  const modulePolicy = modulePolicies[moduleId] || {};
+  // Access module-specific policy
+  // Policy.modules can contain both patterns/allowed_deps and module-specific metadata
+  const modulesSection = policy.modules || {};
+  const modulePolicy: ModulePolicy = modulesSection[moduleId] || {};
 
   // Generate coordinates based on index (simple layout)
   // In a real implementation, this could use a graph layout algorithm
