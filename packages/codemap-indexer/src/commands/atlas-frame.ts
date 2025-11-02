@@ -3,6 +3,7 @@ import { initLexBrain, getFacts } from '../lexbrain.js';
 import { fromB64 } from '../compress.js';
 import { initCompress } from '../compress.js';
 import { loadPolicy } from '../policy.js';
+import { Policy } from '../types.js';
 
 interface AtlasFrameOptions {
   moduleScope: string;
@@ -30,6 +31,8 @@ interface AtlasFrameData {
   modules: AtlasModule[];
   critical_rule: string;
 }
+
+const GRID_WIDTH = 10;
 
 export async function atlasFrameCommand(options: AtlasFrameOptions): Promise<void> {
   console.log(kleur.cyan('🗺️  LexMap Atlas Frame'));
@@ -104,9 +107,9 @@ function buildModuleNeighborhood(
   return Array.from(moduleSet);
 }
 
-function createAtlasModule(moduleId: string, index: number, policy: any): AtlasModule {
+function createAtlasModule(moduleId: string, index: number, policy: Policy): AtlasModule {
   // Generate simple grid coordinates based on index
-  const coords: [number, number] = [index % 10, Math.floor(index / 10)];
+  const coords: [number, number] = [index % GRID_WIDTH, Math.floor(index / GRID_WIDTH)];
 
   const module: AtlasModule = {
     id: moduleId,
