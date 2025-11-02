@@ -1,14 +1,41 @@
 {
-  "name": "lexmap-root",
-  "private": true,
+  "name": "lexmap-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Architectural policy enforcement MCP server",
+  "private": false,
+  "workspaces": [
+    "packages/*",
+    "lexmap.scan"
+  ],
+  "bin": {
+    "lexmap-mcp": "./mcp-server.mjs"
+  },
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm --filter @lex/lexmap-indexer test:smoke",
     "index": "pnpm --filter @lex/lexmap-indexer dev index",
     "slice": "pnpm --filter @lex/lexmap-indexer dev slice",
-    "query": "pnpm --filter @lex/lexmap-indexer dev query"
+    "query": "pnpm --filter @lex/lexmap-indexer dev query",
+    "mcp": "node mcp-server.mjs",
+    "mcp:http": "node mcp-http.mjs"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   },
   "devDependencies": {
     "typescript": "^5.6.3"
+  },
+  "license": "MIT",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "architecture",
+    "policy",
+    "code-analysis"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Guffawaffle/LexMap.git"
   }
 }
