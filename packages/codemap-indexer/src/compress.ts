@@ -1,8 +1,8 @@
 import {
-  compress as fzstdCompress,
   decompress as fzstdDecompress,
 } from "fzstd";
 import { stableStringify } from "./hash.js";
+import { gzipSync } from "zlib";
 
 export async function initCompress(): Promise<void> {
   // fzstd doesn't require initialization
@@ -10,7 +10,8 @@ export async function initCompress(): Promise<void> {
 
 export async function toB64(obj: any): Promise<string> {
   const json = stableStringify(obj);
-  const compressed = fzstdCompress(Buffer.from(json, "utf8"));
+  // Use gzip compression instead of zstd for now since fzstd doesn't export compress
+  const compressed = gzipSync(Buffer.from(json, "utf8"));
 
   return Buffer.from(compressed).toString("base64");
 }
