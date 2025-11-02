@@ -18,7 +18,7 @@
     "simple-git": "^3.25.0",
     "globby": "^14.0.2",
     "kleur": "^4.1.5",
-    "@zstd/wasm": "^0.0.20",
+    "fzstd": "^0.1.1",
     "undici": "^6.19.8"
   },
   "devDependencies": {
