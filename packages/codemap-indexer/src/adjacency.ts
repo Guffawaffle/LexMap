@@ -5,6 +5,8 @@
  * based on allowed_callers and forbidden_callers in the policy.
  */
 
+import { stableStringify } from './hash.js';
+
 export interface AdjacencyGraph {
   adjacency: Record<string, string[]>;
   forbidden: Record<string, string[]>;
@@ -32,10 +34,10 @@ export interface PolicyWithAllowedDeps {
 const adjacencyCache = new Map<string, AdjacencyGraph>();
 
 /**
- * Generate a simple hash for the policy object to use as cache key
+ * Generate a stable hash for the policy object to use as cache key
  */
 function hashPolicy(policy: any): string {
-  return JSON.stringify(policy);
+  return stableStringify(policy);
 }
 
 /**
