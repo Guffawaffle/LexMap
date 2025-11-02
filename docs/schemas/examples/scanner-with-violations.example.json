@@ -1,0 +1,32 @@
+{
+  "$comment": "Example scanner output with policy violations detected",
+  "language": "php",
+  "files": [
+    {
+      "path": "adapters/external-auth/LegacyUserAccessRepository.php",
+      "declares": ["App\\ExternalAuth\\LegacyUserAccessRepository"],
+      "imports": ["Illuminate\\Database\\Eloquent\\Model"],
+      "feature_flags": [],
+      "permissions": []
+    },
+    {
+      "path": "ui/shared/UserAdminLegacy.js",
+      "declares": ["callAuthAdapterDirectly"],
+      "imports": ["axios"],
+      "feature_flags": [],
+      "permissions": []
+    }
+  ],
+  "warnings": [
+    {
+      "path": "adapters/external-auth/LegacyUserAccessRepository.php",
+      "pattern": "duplicate_auth_logic",
+      "message": "Local UserAccessRepository found outside services/auth-core. This violates policy: only services/auth-core should define UserAccessRepository."
+    },
+    {
+      "path": "ui/shared/UserAdminLegacy.js",
+      "pattern": "ui_calling_auth_adapter_directly",
+      "message": "UI code appears to call auth adapter directly. Per LexMap policy, ui/user-admin-panel must call api/user-access-service, not external-auth-adapter."
+    }
+  ]
+}

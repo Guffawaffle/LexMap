@@ -1,0 +1,71 @@
+{
+  "$comment": "Example LexMap policy file for user admin and auth modules",
+  "modules": {
+    "services/auth-core": {
+      "description": "Core auth abstractions. Canonical home for UserAccessRepository, TransportClientInterface, etc.",
+      "owns_namespaces": ["App\\Services\\AuthCore\\"],
+      "owns_paths": ["services/auth-core/"],
+      "exposes": [
+        "UserAccessRepositoryInterface",
+        "TransportClientInterface",
+        "AccountNormalizerInterface"
+      ],
+      "allowed_callers": ["external-auth-adapter", "api/user-access-service"],
+      "forbidden_callers": [],
+      "feature_flags": [],
+      "requires_permissions": [],
+      "kill_patterns": ["duplicate_auth_logic"],
+      "notes": "Canonical home for UserAccessRepository, TransportClientInterface. Must not define its own adapter-specific client logic."
+    },
+
+    "external-auth-adapter": {
+      "description": "External auth adapter. Implements auth core contracts, adds external provider-specific request/response logic.",
+      "owns_namespaces": ["App\\ExternalAuth\\"],
+      "owns_paths": ["adapters/external-auth/"],
+      "exposes": ["ExternalAuthClient", "AuthPayloadBuilder"],
+      "allowed_callers": [
+        "services/auth-core.tests",
+        "cli/auth-sync",
+        "ui/auth-dashboard"
+      ],
+      "forbidden_callers": ["ui/user-admin-panel"],
+      "feature_flags": [],
+      "requires_permissions": [],
+      "kill_patterns": [],
+      "notes": "Must not define its own UserAccessRepository; must rely on services/auth-core. UI must not call adapter directly."
+    },
+
+    "ui/user-admin-panel": {
+      "description": "User admin UI (Add User button, etc.).",
+      "owns_paths": ["ui/user-admin-panel/", "ui/shared/UserAdminComponents"],
+      "exposes": ["renderUserAdminPanel", "openAddUserModal"],
+      "allowed_callers": ["api/user-access-service"],
+      "forbidden_callers": ["external-auth-adapter", "services/auth-core"],
+      "feature_flags": ["beta_user_admin"],
+      "requires_permissions": ["can_manage_users"],
+      "kill_patterns": [],
+      "notes": "UI must not call adapter directly; button gating lives here. Add User button requires can_manage_users permission AND beta_user_admin feature flag."
+    },
+
+    "api/user-access-service": {
+      "description": "Service layer for user access operations. Mediates between UI and auth adapters.",
+      "owns_paths": [
+        "app/Services/UserAccess/",
+        "app/Http/Controllers/Api/UserAccessController.php"
+      ],
+      "exposes": ["UserAccessService", "UserAccessController"],
+      "allowed_callers": ["ui/user-admin-panel"],
+      "forbidden_callers": [],
+      "feature_flags": ["beta_user_admin"],
+      "requires_permissions": ["can_manage_users"],
+      "kill_patterns": [],
+      "notes": "This is the approved boundary between UI and auth core. Enforces permission checks before delegating to services/auth-core."
+    }
+  },
+
+  "global_kill_patterns": [
+    "duplicate_auth_logic",
+    "direct_external_auth_bypass_core",
+    "ui_calling_auth_adapter_directly"
+  ]
+}

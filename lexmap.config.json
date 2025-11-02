@@ -1,0 +1,21 @@
+{
+  "performance": {
+    "cold": {
+      "max_wall_ms": 900000,
+      "max_mem_mb": 4096
+    },
+    "incremental": {
+      "max_wall_ms": 120000,
+      "max_changed_files": 300
+    }
+  },
+  "concurrency": {
+    "php_workers": 4,
+    "ts_workers": 4
+  },
+  "frames": {
+    "max_payload_kb": 200
+  },
+  "determinism_target": 0.95,
+  "heuristics": "auto"
+}

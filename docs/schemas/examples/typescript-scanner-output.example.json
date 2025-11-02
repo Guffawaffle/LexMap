@@ -1,0 +1,21 @@
+{
+  "$comment": "Example TypeScript/JavaScript scanner output for UI module",
+  "language": "typescript",
+  "files": [
+    {
+      "path": "ui/user-admin-panel/UserAccessPanel.tsx",
+      "declares": ["UserAccessPanel", "openAddUserModal"],
+      "imports": ["react", "UserAccessService"],
+      "feature_flags": ["beta_user_admin"],
+      "permissions": ["can_manage_users"]
+    },
+    {
+      "path": "ui/user-admin-panel/UserAccessService.ts",
+      "declares": ["UserAccessService"],
+      "imports": ["axios"],
+      "feature_flags": [],
+      "permissions": []
+    }
+  ],
+  "warnings": []
+}

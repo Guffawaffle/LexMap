@@ -1,0 +1,141 @@
+{
+  "name": "lexmap",
+  "version": "0.1.0",
+  "description": "LexMap AI-first code indexing tools",
+  "tools": [
+    {
+      "name": "codemap.get",
+      "description": "List available codemap frames from LexBrain",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "Filter by frame kind (codemap.symbols, codemap.calls, etc.)"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Filter by repository name"
+          },
+          "commit": {
+            "type": "string",
+            "description": "Filter by commit hash"
+          }
+        }
+      }
+    },
+    {
+      "name": "codemap.slice",
+      "description": "Return compact slice for a symbol or path with neighborhood context",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string",
+            "description": "Symbol FQN or ID to slice around"
+          },
+          "radius": {
+            "type": "number",
+            "description": "Hop distance for neighborhood (default: 2)",
+            "default": 2
+          }
+        },
+        "required": ["symbol"]
+      }
+    },
+    {
+      "name": "codemap.query",
+      "description": "Run codemap queries (callers, callees, module deps, patterns, violations)",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["callers", "callees", "module_deps", "recent_patterns", "violations"],
+            "description": "Query type to execute"
+          },
+          "args": {
+            "type": "object",
+            "description": "Query-specific arguments (e.g., {symbol: 'FQN'} for callers/callees)"
+          }
+        },
+        "required": ["type"]
+      }
+    },
+    {
+      "name": "codemap.plan",
+      "description": "Generate or fetch frozen AI execution plan for indexing",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["generate", "fetch"],
+            "description": "Generate new plan or fetch existing"
+          },
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "commit": {
+            "type": "string",
+            "description": "Commit hash (for fetch mode)"
+          }
+        },
+        "required": ["mode"]
+      }
+    },
+    {
+      "name": "codemap.index",
+      "description": "Execute indexing per plan (cold or incremental)",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": ["cold", "incremental"],
+            "description": "Index mode"
+          },
+          "plan_ai": {
+            "type": "boolean",
+            "description": "Use AI planner",
+            "default": false
+          },
+          "determinism_target": {
+            "type": "number",
+            "description": "Minimum determinism ratio",
+            "default": 0.95
+          },
+          "heuristics": {
+            "type": "string",
+            "enum": ["off", "hard", "auto"],
+            "default": "auto"
+          }
+        },
+        "required": ["mode"]
+      }
+    },
+    {
+      "name": "codemap.metrics",
+      "description": "Fetch last-run metrics (determinism ratio, timings, etc.)",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "repo": {
+            "type": "string",
+            "description": "Repository name"
+          },
+          "commit": {
+            "type": "string",
+            "description": "Commit hash (optional, defaults to latest)"
+          }
+        }
+      }
+    }
+  ],
+  "server": {
+    "type": "http",
+    "url": "http://localhost:6902",
+    "description": "LexMap MCP server (start with `codemap index --serve`)"
+  }
+}

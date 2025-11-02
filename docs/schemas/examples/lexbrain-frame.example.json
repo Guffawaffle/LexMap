@@ -1,0 +1,36 @@
+{
+  "$comment": "Example LexBrain Frame metadata for TICKET-123 work session",
+  "timestamp": "2025-11-01T16:04:12-05:00",
+  "branch": "feature/TICKET-123-auth-handshake-timeout",
+  "jira": ["TICKET-123"],
+  "module_scope": [
+    "services/auth-core",
+    "external-auth-adapter",
+    "ui/user-admin-panel"
+  ],
+  "feature_flags": ["beta_user_admin"],
+  "permissions": ["can_manage_users"],
+  "summary_caption": "Auth handshake timeout + disabled Add User button",
+  "status_snapshot": {
+    "tests_failing": 2,
+    "merge_blockers": [
+      "UserAccessController wiring",
+      "ExternalAuthClient timeout semantics"
+    ],
+    "next_action": "Enable Add User button behind permission can_manage_users"
+  },
+  "keywords": [
+    "auth handshake timeout",
+    "connect_handshake_ms",
+    "external auth adapter",
+    "Add User disabled",
+    "UserAccessController",
+    "merge-weave blocker",
+    "TICKET-123",
+    "beta_user_admin",
+    "can_manage_users",
+    "services/auth-core",
+    "ui/user-admin-panel",
+    "TransportClientInterface"
+  ]
+}

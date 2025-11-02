@@ -1,0 +1,47 @@
+{
+  "modules": {
+    "patterns": [
+      {"name": "controllers", "match": "app/Http/Controllers/**"},
+      {"name": "models", "match": "app/Models/**"},
+      {"name": "services", "match": "app/Services/**"},
+      {"name": "repositories", "match": "app/Repositories/**"},
+      {"name": "middleware", "match": "app/Http/Middleware/**"},
+      {"name": "requests", "match": "app/Http/Requests/**"},
+      {"name": "jobs", "match": "app/Jobs/**"},
+      {"name": "events", "match": "app/Events/**"},
+      {"name": "listeners", "match": "app/Listeners/**"}
+    ],
+    "allowed_deps": [
+      {"from": "controllers", "to": "services"},
+      {"from": "controllers", "to": "requests"},
+      {"from": "controllers", "to": "models"},
+      {"from": "services", "to": "repositories"},
+      {"from": "services", "to": "models"},
+      {"from": "services", "to": "events"},
+      {"from": "repositories", "to": "models"},
+      {"from": "listeners", "to": "services"},
+      {"from": "listeners", "to": "jobs"},
+      {"from": "jobs", "to": "services"},
+      {"from": "middleware", "to": "services"}
+    ]
+  },
+  "kill_patterns": [
+    {"kind": "generated", "match": "**/_ide_helper*.php"},
+    {"kind": "vendor", "match": "vendor/**"},
+    {"kind": "cache", "match": "bootstrap/cache/**"}
+  ],
+  "heuristics": {
+    "enable": true,
+    "di_patterns": [
+      {"kind": "laravel_app", "match": "app('%s')"},
+      {"kind": "laravel_resolve", "match": "resolve('%s')"},
+      {"kind": "container_make", "class": "Illuminate\\Container\\Container", "method": "make"},
+      {"kind": "facade_accessor", "match": "\\Facades\\%s::"}
+    ],
+    "confidence": {
+      "hard": 0.95,
+      "soft": 0.6
+    }
+  },
+  "determinism_target": 0.95
+}

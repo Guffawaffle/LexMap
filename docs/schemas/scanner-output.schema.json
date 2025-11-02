@@ -1,0 +1,124 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lexmap.dev/schemas/scanner-output.schema.json",
+  "title": "LexMap Scanner Output",
+  "description": "Contract for language scanner plugins. Scanners observe code and emit structured facts without architectural judgment.",
+  "type": "object",
+  "required": ["language", "files"],
+  "properties": {
+    "language": {
+      "type": "string",
+      "description": "Language identifier (php, javascript, typescript, python, etc.)",
+      "examples": ["php", "javascript", "typescript", "python", "css", "scss"]
+    },
+    "files": {
+      "type": "array",
+      "description": "List of scanned files with their declarations, imports, and metadata",
+      "items": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path from repository root",
+            "examples": [
+              "barebones/integrations/hie/core/SurescriptsClient.php"
+            ]
+          },
+          "declares": {
+            "type": "array",
+            "description": "Symbols declared/defined in this file (classes, functions, components, etc.)",
+            "items": {
+              "type": "string"
+            },
+            "examples": [
+              ["barebones\\integrations\\hie\\core\\SurescriptsClient"],
+              ["ProviderEndpointsController"],
+              ["renderProviderEndpointsPanel"]
+            ]
+          },
+          "imports": {
+            "type": "array",
+            "description": "Symbols imported/required/used by this file",
+            "items": {
+              "type": "string"
+            },
+            "examples": [
+              [
+                "barebones\\integrations\\hie\\core\\Contracts\\TransportClientInterface",
+                "GuzzleHttp\\Client"
+              ]
+            ]
+          },
+          "feature_flags": {
+            "type": "array",
+            "description": "Feature flags referenced in this file (variant gates, flag checks)",
+            "items": {
+              "type": "string"
+            },
+            "examples": [["enhanced_provider_lookup"]]
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Permission strings/ACL checks found in this file",
+            "items": {
+              "type": "string"
+            },
+            "examples": [["upr_physician_list"]]
+          }
+        }
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "description": "Scanner-detected potential issues (duplicate patterns, anti-patterns, etc.)",
+      "items": {
+        "type": "object",
+        "required": ["path", "pattern", "message"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "File path where issue was detected"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Kill pattern identifier matching LexMap policy",
+            "examples": [
+              "duplicate_identifier_repo",
+              "direct_surescripts_client_bypass_core"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable explanation of the issue"
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "language": "php",
+      "files": [
+        {
+          "path": "barebones/integrations/hie/core/SurescriptsClient.php",
+          "declares": ["barebones\\integrations\\hie\\core\\SurescriptsClient"],
+          "imports": [
+            "barebones\\integrations\\hie\\core\\Contracts\\TransportClientInterface",
+            "GuzzleHttp\\Client"
+          ],
+          "feature_flags": ["enhanced_provider_lookup"],
+          "permissions": ["upr_physician_list"]
+        }
+      ],
+      "warnings": [
+        {
+          "path": "barebones/integrations/hie/surescripts/LegacyIdentifierMapRepository.php",
+          "pattern": "duplicate_identifier_repo",
+          "message": "Local IdentifierMapRepository found outside hie/core"
+        }
+      ]
+    }
+  ],
+  "additionalProperties": false
+}

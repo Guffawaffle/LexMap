@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lexmap.dev/schemas/lexbrain-frame-metadata.schema.json",
+  "title": "LexBrain Frame Metadata",
+  "description": "Metadata structure for LexBrain Frames. MUST use canonical vocabulary from LexMap policy for module_scope, feature_flags, and keywords. This is the bridge between temporal state (LexBrain) and structural truth (LexMap).",
+  "type": "object",
+  "required": [
+    "timestamp",
+    "branch",
+    "module_scope",
+    "summary_caption",
+    "keywords"
+  ],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO8601 timestamp with local timezone offset",
+      "examples": ["2025-11-01T16:04:12-05:00"]
+    },
+    "branch": {
+      "type": "string",
+      "description": "Full git branch name at time of Frame creation",
+      "examples": ["feature/WEB-23621_rle_tls_handshake"]
+    },
+    "jira": {
+      "type": "array",
+      "description": "Jira ticket IDs referenced in branch name, chat context, or user caption",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z]+-\\d+$"
+      },
+      "examples": [["WEB-23621"]]
+    },
+    "module_scope": {
+      "type": "array",
+      "description": "Module IDs from LexMap touched during this work session. MUST match valid module keys in lexmap.policy.json",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["ui/provider-endpoints", "hie/core", "hie/surescripts"]]
+    },
+    "feature_flags": {
+      "type": "array",
+      "description": "Feature flags relevant to this work. MUST match feature_flags defined in LexMap modules.",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["enhanced_provider_lookup"]]
+    },
+    "permissions": {
+      "type": "array",
+      "description": "Permission strings/ACL checks relevant to this work. Should match requires_permissions in LexMap.",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["upr_physician_list"]]
+    },
+    "summary_caption": {
+      "type": "string",
+      "description": "Short human-readable description of 'what matters here'. User-provided OR auto-generated from first error line.",
+      "examples": [
+        "TLS handshake timeout + disabled Create Endpoint button",
+        "Handshake TLS 1.2 pinned; Create Endpoint still disabled due to perms gate"
+      ]
+    },
+    "status_snapshot": {
+      "type": "object",
+      "description": "Snapshot of work state at time of Frame creation",
+      "properties": {
+        "tests_failing": {
+          "type": "integer",
+          "description": "Number of failing tests",
+          "minimum": 0
+        },
+        "merge_blockers": {
+          "type": "array",
+          "description": "List of issues blocking merge/deployment",
+          "items": {
+            "type": "string"
+          },
+          "examples": [
+            [
+              "ProviderEndpointsController wiring",
+              "SurescriptsClient timeout semantics"
+            ]
+          ]
+        },
+        "next_action": {
+          "type": "string",
+          "description": "What needs to happen next",
+          "examples": [
+            "Enable Create Endpoint button behind permission upr_physician_list"
+          ]
+        }
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "description": "Flattened array of searchable tokens. MUST include: jira keys, branch name, class/controller names, error strings, feature flags, architectural terms from LexMap.",
+      "items": {
+        "type": "string"
+      },
+      "examples": [
+        [
+          "TLS handshake timeout",
+          "connect_handshake_ms",
+          "Surescripts RLE",
+          "Create Endpoint disabled",
+          "ProviderEndpointsController",
+          "merge-weave blocker",
+          "WEB-23621",
+          "enhanced_provider_lookup",
+          "upr_physician_list",
+          "hie/core",
+          "ui/provider-endpoints"
+        ]
+      ]
+    }
+  },
+  "examples": [
+    {
+      "timestamp": "2025-11-01T16:04:12-05:00",
+      "branch": "feature/WEB-23621_rle_tls_handshake",
+      "jira": ["WEB-23621"],
+      "module_scope": ["hie/core", "hie/surescripts", "ui/provider-endpoints"],
+      "feature_flags": ["enhanced_provider_lookup"],
+      "permissions": ["upr_physician_list"],
+      "summary_caption": "TLS handshake timeout + disabled Create Endpoint button",
+      "status_snapshot": {
+        "tests_failing": 2,
+        "merge_blockers": [
+          "ProviderEndpointsController wiring",
+          "SurescriptsClient timeout semantics"
+        ],
+        "next_action": "Enable Create Endpoint button behind permission upr_physician_list"
+      },
+      "keywords": [
+        "TLS handshake timeout",
+        "connect_handshake_ms",
+        "Surescripts RLE",
+        "Create Endpoint disabled",
+        "ProviderEndpointsController",
+        "merge-weave blocker",
+        "WEB-23621",
+        "enhanced_provider_lookup",
+        "upr_physician_list",
+        "hie/core",
+        "ui/provider-endpoints"
+      ]
+    }
+  ],
+  "additionalProperties": true
+}

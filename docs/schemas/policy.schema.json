@@ -1,0 +1,154 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://lexmap.dev/schemas/policy.schema.json",
+  "title": "LexMap Policy File",
+  "description": "Canonical architectural truth. Defines module boundaries, allowed/forbidden call paths, feature flags, and kill patterns. This file is human-reviewed and versioned.",
+  "type": "object",
+  "required": ["modules"],
+  "properties": {
+    "modules": {
+      "type": "object",
+      "description": "Map of module_id -> module definition. Module IDs must be stable, short keys used across LexMap and LexBrain.",
+      "patternProperties": {
+        "^[a-z0-9/_-]+$": {
+          "type": "object",
+          "required": ["description"],
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "Human-readable description of module purpose and ownership"
+            },
+            "owns_namespaces": {
+              "type": "array",
+              "description": "Namespace prefixes owned by this module (for class-based languages)",
+              "items": {
+                "type": "string"
+              },
+              "examples": [["barebones\\integrations\\hie\\core\\"]]
+            },
+            "owns_paths": {
+              "type": "array",
+              "description": "File path prefixes owned by this module",
+              "items": {
+                "type": "string"
+              },
+              "examples": [
+                [
+                  "barebones/integrations/hie/core/",
+                  "awa/resources/apps/js/providerEndpoints/"
+                ]
+              ]
+            },
+            "exposes": {
+              "type": "array",
+              "description": "Public interfaces/classes/functions this module exposes to callers",
+              "items": {
+                "type": "string"
+              },
+              "examples": [
+                ["IdentifierMapRepositoryInterface", "TransportClientInterface"]
+              ]
+            },
+            "allowed_callers": {
+              "type": "array",
+              "description": "Module IDs permitted to depend on this module",
+              "items": {
+                "type": "string"
+              },
+              "examples": [["hie/surescripts", "hie/particle-adapter"]]
+            },
+            "forbidden_callers": {
+              "type": "array",
+              "description": "Module IDs explicitly forbidden from depending on this module",
+              "items": {
+                "type": "string"
+              },
+              "examples": [["ui/provider-endpoints-direct"]]
+            },
+            "feature_flags": {
+              "type": "array",
+              "description": "Feature flags that gate behavior in this module",
+              "items": {
+                "type": "string"
+              },
+              "examples": [["enhanced_provider_lookup"]]
+            },
+            "requires_permissions": {
+              "type": "array",
+              "description": "Permission strings/ACLs required to access this module's functionality",
+              "items": {
+                "type": "string"
+              },
+              "examples": [["upr_physician_list"]]
+            },
+            "kill_patterns": {
+              "type": "array",
+              "description": "Anti-patterns specific to this module that must be eliminated",
+              "items": {
+                "type": "string"
+              }
+            },
+            "notes": {
+              "type": "string",
+              "description": "Additional architectural guidance, constraints, or historical context"
+            }
+          }
+        }
+      }
+    },
+    "global_kill_patterns": {
+      "type": "array",
+      "description": "Repository-wide anti-patterns that must be eliminated regardless of module",
+      "items": {
+        "type": "string"
+      },
+      "examples": [
+        ["duplicate_identifier_repo", "direct_surescripts_client_bypass_core"]
+      ]
+    }
+  },
+  "examples": [
+    {
+      "modules": {
+        "hie/core": {
+          "description": "Core HIE abstractions. Canonical home for IdentifierMapRepository, TransportClientInterface, etc.",
+          "owns_namespaces": ["barebones\\integrations\\hie\\core\\"],
+          "owns_paths": ["barebones/integrations/hie/core/"],
+          "exposes": [
+            "IdentifierMapRepositoryInterface",
+            "TransportClientInterface",
+            "DocumentReferenceNormalizerInterface"
+          ],
+          "allowed_callers": ["hie/surescripts", "hie/particle-adapter"],
+          "forbidden_callers": [],
+          "feature_flags": [],
+          "requires_permissions": [],
+          "kill_patterns": ["duplicate_identifier_repo"],
+          "notes": "Canonical home for IdentifierMapRepository, TransportClientInterface"
+        },
+        "ui/provider-endpoints": {
+          "description": "Provider endpoint admin UI (Create Endpoint button, etc.)",
+          "owns_paths": [
+            "awa/resources/apps/js/providerEndpoints/",
+            "awa/resources/apps/js/encounters/ProviderEndpoints"
+          ],
+          "exposes": [
+            "renderProviderEndpointsPanel",
+            "openCreateEndpointModal"
+          ],
+          "allowed_callers": ["api/provider-endpoints-service"],
+          "forbidden_callers": ["hie/surescripts", "hie/core"],
+          "feature_flags": ["enhanced_provider_lookup"],
+          "requires_permissions": ["upr_physician_list"],
+          "kill_patterns": [],
+          "notes": "UI must not call surescripts directly; button gating lives here"
+        }
+      },
+      "global_kill_patterns": [
+        "duplicate_identifier_repo",
+        "direct_surescripts_client_bypass_core"
+      ]
+    }
+  ],
+  "additionalProperties": false
+}

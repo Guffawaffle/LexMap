@@ -1,0 +1,29 @@
+{
+  "name": "@lex/lexmap-indexer",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "LexMap orchestrator, CLI, and MCP HTTP server",
+  "bin": {
+    "codemap": "dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsc -p tsconfig.json",
+    "test:smoke": "node tests/smoke.mjs"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "zod": "^3.23.8",
+    "ts-morph": "^23.0.0",
+    "simple-git": "^3.25.0",
+    "globby": "^14.0.2",
+    "kleur": "^4.1.5",
+    "@zstd/wasm": "^0.0.20",
+    "undici": "^6.19.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.1",
+    "@types/node": "^22.7.5"
+  }
+}

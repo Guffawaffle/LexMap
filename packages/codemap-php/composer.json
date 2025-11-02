@@ -1,0 +1,16 @@
+{
+  "name": "lex/lexmap-php",
+  "description": "PHP code indexer for LexMap",
+  "type": "project",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "nikic/php-parser": "^4.18"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lex\\LexMapPHP\\": "src/"
+    }
+  },
+  "bin": ["bin/index.php"]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@lex/lexmap-ts",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "TypeScript/JavaScript code indexer for LexMap",
+  "main": "dist/extract.js",
+  "types": "dist/extract.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "ts-morph": "^23.0.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.5"
+  }
+}

@@ -1,0 +1,131 @@
+name: LexMap Indexer
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Index mode'
+        required: true
+        default: 'cold'
+        type: choice
+        options:
+          - cold
+          - incremental
+      plan_ai:
+        description: 'Use AI planner'
+        required: false
+        default: true
+        type: boolean
+
+env:
+  LEXBRAIN_URL: ${{ secrets.LEXBRAIN_URL || 'http://localhost:8123' }}
+  LEXBRAIN_MODE: ${{ secrets.LEXBRAIN_MODE || 'local' }}
+  LEXBRAIN_KEY_HEX: ${{ secrets.LEXBRAIN_KEY_HEX }}
+
+jobs:
+  incremental-index:
+    name: Incremental Index
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install dependencies
+        run: |
+          pnpm install -r
+          cd packages/codemap-php && composer install
+
+      - name: Build packages
+        run: pnpm -r build
+
+      - name: Run incremental index
+        run: |
+          pnpm --filter @lex/lexmap-indexer dev index \
+            --lexbrain "$LEXBRAIN_URL" \
+            --mode "$LEXBRAIN_MODE" \
+            --key-hex "$LEXBRAIN_KEY_HEX"
+        continue-on-error: true
+
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexer-metrics
+          path: .lexmap-metrics.json
+        if: always()
+
+  cold-reindex:
+    name: Cold Reindex (Manual)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer
+
+      - name: Install dependencies
+        run: |
+          pnpm install -r
+          cd packages/codemap-php && composer install
+
+      - name: Build packages
+        run: pnpm -r build
+
+      - name: Run cold index
+        run: |
+          pnpm --filter @lex/lexmap-indexer dev index \
+            --cold \
+            ${{ github.event.inputs.plan_ai == 'true' && '--plan-ai' || '' }} \
+            --determinism-target 0.95 \
+            --lexbrain "$LEXBRAIN_URL" \
+            --mode "$LEXBRAIN_MODE" \
+            --key-hex "$LEXBRAIN_KEY_HEX"
+        continue-on-error: true
+
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        with:
+          name: cold-reindex-metrics
+          path: .lexmap-metrics.json
+        if: always()

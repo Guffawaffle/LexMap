@@ -1,0 +1,10 @@
+{
+  "name": "@lex/lexmap-mcp",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MCP bridge for LexMap code indexer",
+  "main": "manifest.json",
+  "scripts": {
+    "build": "echo 'MCP bridge ready'"
+  }
+}

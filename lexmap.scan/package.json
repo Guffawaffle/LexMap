@@ -1,0 +1,17 @@
+{
+  "name": "lexmap-scanners",
+  "version": "0.1.0",
+  "description": "LexMap scanner plugins and merge tools",
+  "scripts": {
+    "build": "tsc",
+    "merge": "node lexmap-merge.ts",
+    "check": "node lexmap-check.ts"
+  },
+  "dependencies": {
+    "typescript": "^5.0.0",
+    "glob": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}

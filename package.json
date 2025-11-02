@@ -1,0 +1,14 @@
+{
+  "name": "lexmap-root",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm --filter @lex/lexmap-indexer test:smoke",
+    "index": "pnpm --filter @lex/lexmap-indexer dev index",
+    "slice": "pnpm --filter @lex/lexmap-indexer dev slice",
+    "query": "pnpm --filter @lex/lexmap-indexer dev query"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

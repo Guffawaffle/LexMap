@@ -1,0 +1,10 @@
+node_modules
+dist
+.pnpm-store
+vendor/
+.cache
+coverage
+.DS_Store
+*.log
+.env
+.env.local

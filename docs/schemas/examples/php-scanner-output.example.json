@@ -1,0 +1,37 @@
+{
+  "$comment": "Example PHP scanner output for auth core module",
+  "language": "php",
+  "files": [
+    {
+      "path": "services/auth-core/ExternalAuthClient.php",
+      "declares": ["App\\Services\\AuthCore\\ExternalAuthClient"],
+      "imports": [
+        "App\\Services\\AuthCore\\Contracts\\TransportClientInterface",
+        "GuzzleHttp\\Client",
+        "App\\Services\\AuthCore\\UserAccessRepository"
+      ],
+      "feature_flags": [],
+      "permissions": []
+    },
+    {
+      "path": "services/auth-core/Contracts/TransportClientInterface.php",
+      "declares": [
+        "App\\Services\\AuthCore\\Contracts\\TransportClientInterface"
+      ],
+      "imports": [],
+      "feature_flags": [],
+      "permissions": []
+    },
+    {
+      "path": "services/auth-core/UserAccessRepository.php",
+      "declares": [
+        "App\\Services\\AuthCore\\UserAccessRepository",
+        "App\\Services\\AuthCore\\Contracts\\UserAccessRepositoryInterface"
+      ],
+      "imports": ["Illuminate\\Database\\Eloquent\\Model"],
+      "feature_flags": [],
+      "permissions": []
+    }
+  ],
+  "warnings": []
+}

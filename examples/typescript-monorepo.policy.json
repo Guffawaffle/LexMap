@@ -1,0 +1,48 @@
+{
+  "modules": {
+    "patterns": [
+      {"name": "core", "match": "packages/core/**"},
+      {"name": "ui", "match": "packages/ui/**"},
+      {"name": "api", "match": "packages/api/**"},
+      {"name": "utils", "match": "packages/utils/**"},
+      {"name": "types", "match": "packages/types/**"},
+      {"name": "config", "match": "packages/config/**"},
+      {"name": "app-web", "match": "apps/web/**"},
+      {"name": "app-mobile", "match": "apps/mobile/**"}
+    ],
+    "allowed_deps": [
+      {"from": "app-web", "to": "ui"},
+      {"from": "app-web", "to": "api"},
+      {"from": "app-web", "to": "utils"},
+      {"from": "app-web", "to": "types"},
+      {"from": "app-mobile", "to": "ui"},
+      {"from": "app-mobile", "to": "api"},
+      {"from": "app-mobile", "to": "utils"},
+      {"from": "app-mobile", "to": "types"},
+      {"from": "ui", "to": "types"},
+      {"from": "ui", "to": "utils"},
+      {"from": "api", "to": "core"},
+      {"from": "api", "to": "types"},
+      {"from": "api", "to": "utils"},
+      {"from": "core", "to": "types"},
+      {"from": "core", "to": "utils"},
+      {"from": "*", "to": "config"}
+    ]
+  },
+  "kill_patterns": [
+    {"kind": "generated", "match": "**/*.generated.ts"},
+    {"kind": "generated", "match": "**/__generated__/**"},
+    {"kind": "test", "match": "**/*.spec.ts"},
+    {"kind": "test", "match": "**/*.test.ts"},
+    {"kind": "build", "match": "**/dist/**"},
+    {"kind": "build", "match": "**/.next/**"}
+  ],
+  "heuristics": {
+    "enable": false,
+    "confidence": {
+      "hard": 1.0,
+      "soft": 1.0
+    }
+  },
+  "determinism_target": 0.99
+}

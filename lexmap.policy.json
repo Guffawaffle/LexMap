@@ -1,0 +1,46 @@
+{
+  "modules": {
+    "patterns": [
+      {
+        "name": "indexer",
+        "match": "packages/codemap-indexer/**"
+      },
+      {
+        "name": "ts",
+        "match": "packages/codemap-ts/**"
+      },
+      {
+        "name": "php",
+        "match": "packages/codemap-php/**"
+      },
+      {
+        "name": "mcp",
+        "match": "packages/codemap-mcp/**"
+      }
+    ],
+    "allowed_deps": []
+  },
+  "kill_patterns": [
+    {
+      "kind": "generated",
+      "match": "**/dist/**"
+    },
+    {
+      "kind": "vendor",
+      "match": "**/node_modules/**"
+    },
+    {
+      "kind": "vendor",
+      "match": "**/vendor/**"
+    }
+  ],
+  "heuristics": {
+    "enable": true,
+    "di_patterns": [],
+    "confidence": {
+      "hard": 0.95,
+      "soft": 0.6
+    }
+  },
+  "determinism_target": 0.95
+}
